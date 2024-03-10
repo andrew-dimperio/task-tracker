@@ -8,8 +8,8 @@ function handleSubmit(event) {
     let taskDescription = document.getElementById("taskDescription").value
     let taskDeadline = document.getElementById("taskDeadline").value
 
-    if (taskName === '' || taskDescription === '' || taskDeadline === '') {
-        alert("PLEASE FILL IN ALL FIELDS!")
+    if (taskName === '' || taskDeadline === '') {
+        alert("Task name and deadline are required!")
         return
     }
 
@@ -31,20 +31,40 @@ function updateTable() {
             <th>Task</th>
             <th class="desc">Task Description</th>
             <th>Task Deadline</th>
+            <th>Completed</th>
         </tr>
         `;
 
         tasks.forEach(task => {
             const row = document.createElement('tr');
+            if (task.completed) {
+                row.classList.add('completed')
+            }
             row.innerHTML = `
                 <td>${task.name}</td> 
                 <td>${task.description}</td>
                 <td>${task.deadline}</td>
+                <td><input type="checkbox" ${task.completed ? 'checked' : ''}></td>
             `;
+            const checkbox = row.querySelector('input[type="checkbox"]');
+            checkbox.addEventListener('change', () => {
+                task.completed = checkbox.checked;
+                if (task.completed) {
+                    row.classList.add('completed')
+                } else {
+                    row.classList.remove('completed')
+                }
+            });
             taskTable.appendChild(row);
         });
 }
 
+
+function init() {
+    taskTable.innerHTML=''
+    tasks = []
+    updateTable()
+}
 
 
 
@@ -54,3 +74,4 @@ const taskForm = document.getElementById("taskForm");
 const taskTable = document.getElementById("taskTable");
 
 taskForm.addEventListener('submit', handleSubmit)
+init()
